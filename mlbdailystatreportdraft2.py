@@ -11,7 +11,7 @@ TARGET2 = 'http://www.rotowire.com/baseball/player_stats.htm'
 TARGET3 = 'http://www.rotowire.com/baseball/player_stats.htm?pos=P'
 USERNAME = 'rdwelty'
 PASSWORD = 'rdwroto1'
-VALUE_SHEET = r"C:\Users\RYAN\Anaconda\envs\py34\Baseball\06112015_Value.xlsx"
+VALUE_SHEET = r"C:\Users\RYAN\Anaconda\envs\py34\Baseball\07012015_Value.xlsx"
 STAT_TEMPLATE = r"C:\Users\Ryan\Anaconda\envs\py34\Baseball\DayStatTemplate2.xlsx"
 
 FIRSTROW = 3
@@ -82,20 +82,22 @@ while (str(wsp.Cells(LastRow, 1).Value)) != "None":
     
 for i in range(FIRSTROW, LastRow, 1):
     Pos = wsp.Cells(i, 1).Value
-    PlayerID = wsp.Cells(i, 2).Value
+    PlayerID = str(wsp.Cells(i, 2).Value)
+    PlayerID = PlayerID.split('.')[0]
     Player = wsp.Cells(i, 3).Value
     Player = Player.rstrip()
     Team = wsp.Cells(i, 4).Value
     Bats = wsp.Cells(i, 5).Value
     Throws = wsp.Cells(i, 6).Value
     
-    player_string = repr("/baseball/player.htm?id=" + str(PlayerID))
+    player_string = str('/baseball/player.htm?id=%s' % PlayerID)
     print(player_string)
     
     
     try:
-        br.find_element_by_css_selector("a[href*=PlayerID]).click()
+        br.find_element_by_css_selector("a[href$='%s']" % PlayerID).click()
     except NoSuchElementException:
+        print("NoSuchElementException")
         error_log.append("NoSuchElementException: " + Player)
         continue
         
@@ -168,7 +170,8 @@ while (str(wsc.Cells(LastRow, 1).Value)) != "None":
     
 for i in range(FIRSTROW, LastRow, 1):
     Pos = wsc.Cells(i, 1).Value
-    PlayerID = wsc.Cells(i, 2).Value
+    PlayerID = str(wsc.Cells(i, 2).Value)
+    PlayerID = PlayerID.split('.')[0]
     Player = wsc.Cells(i, 3).Value
     Player = Player.rstrip()
     Team = wsc.Cells(i, 4).Value
